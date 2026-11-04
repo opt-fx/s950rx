@@ -1062,7 +1062,7 @@ input[type=range] { padding: 0 !important; }
         <h2>Sampler memory</h2>
         <div class="buttons tight">
           <button id="refresh" data-needs="link" class="small">Refresh</button>
-          <button id="backup" data-needs="link" class="small" title="Save every sample as a WAV file and every program as a program file on your computer">Back up all</button>
+          <button id="backup" data-needs="link" class="small" title="Save every sample as a WAV file and every program as a program file on your computer. Needs the RS232 connection, because sample dumps cannot pass through MIDI">Back up all</button>
         </div>
       </div>
       <div class="memcols">
@@ -3321,7 +3321,7 @@ function initSampleEditor({ app: app2, $: $3, log: log2, withBusy: withBusy2, re
     }
   }
   async function fetchInto(index) {
-    await withBusy2("Fetching sample", async (s) => {
+    await (app2.withSampleSend ?? withBusy2)("Fetching sample", async (s) => {
       const r = await s.fetchSample(index, showProgress2);
       stopPreview();
       state.index = index;
@@ -9638,7 +9638,7 @@ function renderCatalog() {
   refreshEnabled();
 }
 async function fetchSampleToWav(it) {
-  await withBusy(`Fetching ${it.name}`, async (s) => {
+  await (app.withSampleSend ?? withBusy)(`Fetching ${it.name}`, async (s) => {
     const r = await s.fetchSample(it.index, (d, t) => showProgress($2("sendBar"), $2("sendText"), d, t, "words"));
     const wav = s950ToWav(r.samples, r.bits, r.params);
     download(new Blob([wav], { type: "audio/wav" }), `${r.params.name.trim() || "sample"}.wav`);
@@ -9646,6 +9646,7 @@ async function fetchSampleToWav(it) {
   });
 }
 $2("backup").onclick = () => withBusy("Backing up", async (s) => {
+  if (app.mode === "midi") return log("error", "Back up all needs the RS232 connection: sample dumps cannot pass through MIDI");
   let n = 0;
   for (const smp of app.catalog.samples) {
     const r = await s.fetchSample(smp.index, (d, t) => showProgress($2("sendBar"), $2("sendText"), d, t, `${smp.name}`));
@@ -9703,6 +9704,7 @@ function refreshEnabled() {
   $2("ctlState").textContent = !linked ? "Not connected" : app.linkLost ? "No reply from the sampler" : app.mode === "serial" ? "Sampler is on RS232 control" : app.mode === "midi" ? "Sampler is on MIDI control" : "Demo: no real sampler";
   $2("disconnect").disabled = !linked;
   document.querySelectorAll("input[name=target]").forEach((r) => r.disabled = linked);
+  $2("backup").disabled = !linked || app.mode === "midi";
   $2("sendAll").disabled = !linked || app.queue.length === 0;
   document.querySelectorAll('#queue button[data-needs="link"]').forEach((b) => b.disabled = !linked);
   $2("recAll").disabled = !linked || app.queue.length === 0;

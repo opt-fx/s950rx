@@ -84,7 +84,7 @@ The S950 has no multi mode, so one program can mix a drum kit and pitched sounds
 
 ## Sampler memory and the display
 
-**Sampler memory** lists programs (numbered from 1, with their MIDI prog# in brackets) and samples (numbered from 0, as the sampler counts them). Hover a row for its actions: ✎ edit, ⭳ fetch as WAV, ◉ select. **Back up all** saves every sample as a WAV and every program as a `.s950prog.json` file.
+**Sampler memory** lists programs (numbered from 1, with their MIDI prog# in brackets) and samples (numbered from 0, as the sampler counts them). Hover a row for its actions: ✎ edit, ⭳ fetch as WAV, ◉ select. **Back up all** (RS232 only, as sample dumps cannot pass through MIDI) saves every sample as a WAV and every program as a `.s950prog.json` file.
 
 The LCD at the top is the app's own readout. **READ UNIT (HOLD)** shows what the sampler's own two lines are showing while you hold the button down, and it changes to UNIT DISPLAY when it is lit. It reads one display per press and never polls. See Service ops below. Shift-click the display to change its colour; the choice is remembered.
 
