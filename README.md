@@ -15,6 +15,7 @@ A browser editor and librarian for the Akai S900 and S950 samplers. It sends and
 For RS232, which is what sample transfers and recording need:
 
 - **A USB-to-serial adapter.** Tested with a Sabrent CB-DB9P (Prolific chipset).
+- **The adapter's driver.** Prolific adapters need a driver. On a Mac, install the Prolific USB-to-Serial driver from the Mac App Store, then replug the adapter. On Windows, check the adapter appears as a COM port in Device Manager and install Prolific's driver if it doesn't.
 - **A null-modem cable to the sampler's RS232 socket,** which is a DB25. Tested with a DB9 female to DB25 male null-modem cable (1.5 m) from the adapter's DB9 end.
 - **Secure the plug.** The RS232 socket on the sampler is held to the chassis by screws, and the plug may not seat deeply enough over the pins with them in place. Replacing them with hex jackscrews (standoffs) lets you tighten the plug in, so it cannot work loose or fall out mid-transfer. Check the thread first; D-sub sockets usually take 4-40 UNC. This is a recommendation, not a known requirement.
 - **The baud on the sampler.** Note the figure on its RS232 page and put the same in the app's **Baud** box. The sampler goes up to 100000 baud: for that speed, type **99999** on the sampler, then type **100000** in the app's Baud box.
