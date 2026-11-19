@@ -1,6 +1,6 @@
 # S950rx
 
-A browser editor and librarian for the Akai S900 and S950 samplers. It sends and fetches samples, edits them, slices breaks, builds programs and records through the sampler's own converters, over RS232 or MIDI. It runs in Chrome or Edge with no install, and the whole app is one HTML file.
+A browser editor for the Akai S900 and S950 samplers. It sends and fetches samples, edits them, slices breaks, builds programs and records through the sampler's own converters, over RS232 or MIDI. It runs in Chrome or Edge with no install, and the whole app is one HTML file.
 
 **Status: release candidate.** It is built for the **stock ROMs V1.0A and V1.2A** and has been tested on a real S950 running V1.2A. The S900 shares the same exclusive protocol, so it should work, but it has not been tried on one. Other ROMs (V1.2B and custom builds) are not supported: the record automation and the display reading refuse to run on them.
 

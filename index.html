@@ -1026,7 +1026,7 @@ input[type=range] { padding: 0 !important; }
   <div class="brand">
     <div>
       <h1>S950rx</h1>
-      <p class="sub">Akai S900/S950 librarian &amp; editor</p>
+      <p class="sub">Akai S900/S950 editor</p>
     </div>
   </div>
   <div class="conn">
@@ -1183,7 +1183,7 @@ input[type=range] { padding: 0 !important; }
       <div class="panel">
         <div class="row wrap progbar">
           <button id="progNew" class="small" title="Start an empty program. If the builder has changes that have not been sent, it asks first.">New program</button>
-          <label class="inline">Program name <input id="progName" maxlength="10" size="12" value="NEW PROG"></label>
+          <label class="inline">Program name <input id="progName" maxlength="10" size="12" value="NEW PROG" autocomplete="off"></label>
           <label class="inline" title="The MIDI program-change number that selects this program (unit page 2)">MIDI prog# <input id="progMidi" type="number" min="1" max="128" value="1"></label>
           <label class="check" title="Positional crossfade (unit page 2): where keygroups overlap, one fades out as the next fades in across the keyboard. For smoothing multisamples; leave off for drum kits."><input type="checkbox" id="progXfade"> Positional crossfade</label>
           <span class="spacer"></span>
@@ -1493,7 +1493,7 @@ input[type=range] { padding: 0 !important; }
   <p class="blurb">Works in Chrome and Edge. Safari and Firefox don't support Web MIDI or Web Serial, so they can't connect to a sampler.</p>
   <div class="footrow">
     <p class="orig">Original concept and code: <a href="https://github.com/dxzl/akai-s950" target="_blank" rel="noopener">dxzl</a>, <i>S950rs</i> v2.4, GPL.</p>
-    <p class="line"><span>S950rx: ported to the browser and extended by OPT</span><span class="ver" title="Build 247">v1.0</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
+    <p class="line"><span>S950rx: ported to the browser and extended by OPT</span><span class="ver" title="Build 248">v1.0</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
   </div>
 </footer>
 
@@ -7681,6 +7681,15 @@ var S950Session = class {
         }
         await this.send(encodeSampleParams(params, target), { note: `SPRM #${target} "${name}"` });
         await sleep(this.programDelayMs);
+        try {
+          const back = await this.#getSampleParams(target);
+          if (back.mode !== params.mode) {
+            this.log("error", null, `"${name}" came back as mode ${back.mode}, not ${params.mode}: sending its parameters again`);
+            await this.send(encodeSampleParams(params, target), { note: `SPRM #${target} "${name}" (again)` });
+            await sleep(this.programDelayMs);
+          }
+        } catch {
+        }
         return target;
       } finally {
         await this.send(request(OP.SECRD)).catch(() => {
@@ -9318,6 +9327,7 @@ $2("progNew").onclick = () => {
   $2("progName").dispatchEvent(new Event("input"));
   log("info", `new empty program "${name}"`);
 };
+$2("progName").value = "NEW PROG";
 {
   const n = $2("progName");
   let fresh = false;
