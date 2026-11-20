@@ -2,7 +2,7 @@
 
 A browser editor for the Akai S900 and S950 samplers. It sends and fetches samples, edits them, slices breaks, builds programs and records through the sampler's own converters, over RS232 or MIDI. It runs in Chrome or Edge with no install, and the whole app is one HTML file.
 
-**Status: release candidate.** It is built for the **stock ROMs V1.0A and V1.2A** and has been tested on a real S950 running V1.2A. The S900 shares the same exclusive protocol, so it should work, but it has not been tried on one. **V1.2B**, Akai's release for S950s fitted with the SCSI card, has a different memory layout. The app recognises it, and sample, program and parameter transfers do not depend on the ROM, so they should work. The record automation and the display reading are mapped for V1.0A and V1.2A only and refuse to run on V1.2B. I have not tried it on a real V1.2B. Custom operating systems have not been tried.
+**Status: release candidate.** It is built for the **stock ROMs V1.0A and V1.2A** and has been tested on a real S950 running V1.2A. The S900 shares the same exclusive protocol, so it should work, but it has not been tried on one. **V1.2B**, Akai's release for S950s fitted with the SCSI card, has a different memory layout. The app recognises it, and I have mapped the record automation and the display reading for it from the V1.2B ROM image. Sample, program and parameter transfers do not depend on the ROM. I have not tried V1.2B on a real sampler, so treat it as untested. Custom operating systems have not been tried.
 
 ## Quick start
 
@@ -137,7 +137,7 @@ All on an S950 with V1.2A, over RS232 (a Prolific USB adapter, up to 100000 baud
 ## Not tested or not done
 
 - **S900:** never run on one. The protocol is shared, so it should work.
-- **V1.2B** (Akai's SCSI-card release): recognised, but never tried on real hardware. Transfers and edits should work; the record automation and display reading are not mapped for it. Custom operating systems have not been tried.
+- **V1.2B** (Akai's SCSI-card release): recognised and mapped from the ROM image, but never tried on a real sampler. Custom operating systems have not been tried.
 - **Export pattern (.mid)** in a sequencer or DAW.
 - The record automation's "any key" start, which might remove the ENT step, and Timestretch at the extremes of its ranges.
 - Saving disk images (`.img`, `.hfe`) and reading them back are not built.

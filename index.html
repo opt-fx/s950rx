@@ -1493,7 +1493,7 @@ input[type=range] { padding: 0 !important; }
   <p class="blurb">Works in Chrome and Edge. Safari and Firefox don't support Web MIDI or Web Serial, so they can't connect to a sampler.</p>
   <div class="footrow">
     <p class="orig">Original concept and code: <a href="https://github.com/dxzl/akai-s950" target="_blank" rel="noopener">dxzl</a>, <i>S950rs</i> v2.4, GPL.</p>
-    <p class="line"><span>S950rx: ported to the browser and extended by OPT</span><span class="ver" title="Build 248">v1.0</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
+    <p class="line"><span>S950rx: ported to the browser and extended by OPT</span><span class="ver" title="Build 249">v1.0</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
   </div>
 </footer>
 
@@ -3994,7 +3994,7 @@ function initSampleEditor({ app: app2, $: $3, log: log2, withBusy: withBusy2, re
 // src/service.js
 var SVC = { POKE: 12, CALL: 13, PEEK: 14 };
 var PROFILES = {
-  B: { rom: "V1.2B", table: 32630, keyBuf: 46439, latch: 46444, mask: 46490, lcd1: 43750, lcd2: 44014 },
+  B: { rom: "V1.2B", table: 32630, keyBuf: 46439, latch: 46444, mask: 46490, lcd1: 43750, lcd2: 44014, playScroll: 40676, pageVar: 46614, pageText: 16694, pageNameField: 16744 },
   A: { rom: "V1.0A / V1.2A", table: 32266, keyBuf: 46075, latch: 46080, mask: 46114, lcd1: 43386, lcd2: 43650, playScroll: 40312, pageVar: 46238, pageText: 16356, pageNameField: 16406 }
 };
 var KEYS = {
@@ -4277,8 +4277,8 @@ function initRecordGuide({ app: app2, $: $3, log: log2, withBusy: withBusy2, ref
   const chByte = () => app2.basicKnown && !app2.omni ? app2.basic : 0;
   const needRom = async (s) => {
     const prof = await s.detectRom(chByte());
-    if (prof !== PROFILES.A) {
-      log2("error", `these record pages are mapped for ROM V1.0A / V1.2A only; this sampler looks like ${prof.rom}`);
+    if (!prof.pageVar || !prof.pageNameField) {
+      log2("error", `these record pages are not mapped for ROM ${prof.rom}`);
       return false;
     }
     return true;
@@ -4298,7 +4298,7 @@ function initRecordGuide({ app: app2, $: $3, log: log2, withBusy: withBusy2, ref
     const m = await s.sectionMask(chByte());
     if (m !== 4) return log2("error", `the sampler reports ${sectionName(m)}, not RECORD`);
     await s.gotoRecPage(1, { ch: chByte() });
-    await s.pokeVerified(PROFILES.A.pageNameField, nameBytes(temp), { ch: chByte() });
+    await s.pokeVerified((await s.detectRom(chByte())).pageNameField, nameBytes(temp), { ch: chByte() });
     await s.gotoRecPage(2, { ch: chByte() });
     await s.gotoRecPage(1, { ch: chByte() });
     const shown = (await s.recordText(chByte())).slice(40, 80).trim();
@@ -4484,7 +4484,7 @@ function initRecordGuide({ app: app2, $: $3, log: log2, withBusy: withBusy2, ref
 // src/mirror.js
 async function readUnitDisplay(s, ch = 0) {
   const prof = await s.detectRom(ch);
-  if (prof !== PROFILES.A) return { rows: ["UNIT DISPLAY NOT MAPPED", `for ROM ${prof.rom}`.padEnd(40)], ok: false };
+  if (!prof.playScroll || !prof.pageText) return { rows: ["UNIT DISPLAY NOT MAPPED", `for ROM ${prof.rom}`.padEnd(40)], ok: false };
   const m = await s.sectionMask(ch);
   const sec = sectionName(m);
   if (m === 8) {
@@ -9380,7 +9380,7 @@ async function backToPlay(s) {
   if (app.noService) return;
   try {
     const ch = app.basicKnown && !app.omni ? app.basic : 0;
-    if (await s.detectRom(ch) !== PROFILES.A) return;
+    if (!(await s.detectRom(ch)).pageVar) return;
     if (await s.sectionMask(ch) !== 4) return;
     await s.pressKeys(["PLAY"], { ch });
     log("ok", "the sampler was on the record pages: pressed PLAY so the program can be played");
