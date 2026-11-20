@@ -32,6 +32,8 @@ For RS232, which is what sample transfers and recording need:
 
 The sampler powers up under MIDI control. **Switch to RS232** (under Sampler control) flips it over by SysEx: it sets the baud in the box, then opens the serial port. **Hand back to MIDI on disconnect** flips it back. Over RS232 the app cannot change the baud, because the sampler no longer listens on MIDI; if nothing comes back, the Activity line says which baud was tried. Connect over MIDI and press Switch to RS232 again to fix a mismatch.
 
+After connecting, the app reads the sampler's operating system from its memory and shows it on its own row under **Connection** in the Tools panel: **ROM V1.0A**, **V1.2A** or **V1.2B** (or **demo**). **not read** means the sampler did not answer that check, for example when MIDI is not connected both ways or the sampler is on another page. The connection itself still works.
+
 The sampler must be on **MIDI page 5, Control by** MIDI or RS232 to match, and notes only sound while it is on MIDI control. **Omni** (a tick box under Sampler control) shows and sets the sampler's Omni setting.
 
 **Test MIDI route** (under Sampler control, MIDI only) finds the largest program your MIDI path can carry. It sends test programs of 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48 and 64 keygroups to the `AUDITION` slot, reads each back and compares it, and reports the biggest that arrived intact. The result is remembered for that pair of MIDI ports. After that, sending a larger program offers a detour over RS232 instead of failing. If nothing gets through, the app says to use RS232 for programs.
@@ -93,7 +95,7 @@ The LCD at the top is the app's own readout. **READ UNIT (HOLD)** shows what the
 
 Part of the character of a vintage sampler is its converters. **Record…** on a queued file plays it from the computer into the sampler's LINE input, so the take is made by the sampler itself. Cable the computer's audio output to the LINE input and pick the output in the panel.
 
-On a V1.0A or V1.2A the app drives the record pages. It writes a placeholder name, types the bandwidth and recording time (worked out from the file), and waits at the level page. You audition the file in a loop, set REC LEVEL and the threshold, press ENT on the sampler and let the app play it. **Check recording** then finds the new sample, checks its rate and length against the plan, gives it its real name and sets its pitch to C3 so it plays at the recorded speed.
+On a V1.0A, V1.2A or V1.2B the app drives the record pages. It writes a placeholder name, types the bandwidth and recording time (worked out from the file), and waits at the level page. You audition the file in a loop, set REC LEVEL and the threshold, press ENT on the sampler and let the app play it. **Check recording** then finds the new sample, checks its rate and length against the plan, gives it its real name and sets its pitch to C3 so it plays at the recorded speed.
 
 **Record all through the sampler…** repeats this for every queued file. The level is set once on the first take, or before every take if you tick *Set the level for every take*. For each take the only manual step is pressing ENT during the countdown (8 s by default): the stock sampler does not take ENT from the app, and the level page does not answer MIDI. Files already on the sampler are skipped, so Start again carries on after a failed take. Samples made this way end in `*` (`AMEN*`), which can be switched off. Sending a program puts the sampler back on PLAY if it was left on the record pages.
 
