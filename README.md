@@ -32,7 +32,7 @@ For RS232, which is what sample transfers and recording need:
 
 The sampler powers up under MIDI control. **Switch to RS232** (under Sampler control) flips it over by SysEx: it sets the baud in the box, then opens the serial port. **Hand back to MIDI on disconnect** flips it back. Over RS232 the app cannot change the baud, because the sampler no longer listens on MIDI; if nothing comes back, the Activity line says which baud was tried. Connect over MIDI and press Switch to RS232 again to fix a mismatch.
 
-After connecting, the app reads the sampler's operating system from its memory and shows it on its own row under **Connection** in the Tools panel: **ROM V1.0A**, **V1.2A** or **V1.2B** (or **demo**). **not read** means the sampler did not answer that check, for example when MIDI is not connected both ways or the sampler is on another page. The connection itself still works.
+After connecting, the app reads the sampler's operating system from its memory and shows it on its own row under **Connection** when you open **Tools**: **ROM V1.0A**, **V1.2A** or **V1.2B** (or **demo**). **not read** means the sampler did not answer that check, for example when MIDI is not connected both ways or the sampler is on another page. The connection itself still works.
 
 The sampler must be on **MIDI page 5, Control by** MIDI or RS232 to match, and notes only sound while it is on MIDI control. **Omni** (a tick box under Sampler control) shows and sets the sampler's Omni setting.
 
