@@ -396,7 +396,7 @@ details.tools[open] > summary::before { transform: rotate(90deg); }
   overflow: auto;
 }
 /* the connection read-out in Tools is plain coloured text, not a pill */
-#status.pill { padding: 0; border: 0; border-radius: 0; font-size: 12.5px; }
+#status.pill, #romInfo.pill { padding: 0; border: 0; border-radius: 0; font-size: 12.5px; }
 /* drag handle for reordering keygroups */
 .kg .gripcell { width: 22px; padding-left: 2px; padding-right: 0; text-align: center; }
 .grip {
@@ -1098,6 +1098,7 @@ input[type=range] { padding: 0 !important; }
         <div class="toolrow"><button id="testMidi" data-needs="link" class="small ghost" title="Sends test programs of growing size over MIDI to find the largest your MIDI route can carry, and remembers it. Needs a MIDI connection. Uses the AUDITION program slot.">Test MIDI route</button> <span id="routeInfo" class="hint"></span></div>
         <div class="toolrow"><button id="resetAll" class="small ghost" title="Clear everything this page remembers (ports, baud rate, LCD colour, options) and start fresh">Reset all settings</button></div>
         <div class="toolrow"><span class="hint">Connection:</span> <span id="status" class="pill off">Not connected</span></div>
+        <div id="romRow" class="toolrow" hidden><span class="hint">ROM:</span> <span id="romInfo" class="pill off" title="The operating system version the sampler reports, read from its memory after connecting"></span></div>
         <p class="hint">Remembered on this computer:</p>
         <pre id="savedSettings" class="saved">nothing yet</pre>
         
@@ -1493,7 +1494,7 @@ input[type=range] { padding: 0 !important; }
   <p class="blurb">Works in Chrome and Edge. Safari and Firefox don't support Web MIDI or Web Serial, so they can't connect to a sampler.</p>
   <div class="footrow">
     <p class="orig">Original concept and code: <a href="https://github.com/dxzl/akai-s950" target="_blank" rel="noopener">dxzl</a>, <i>S950rs</i> v2.4, GPL.</p>
-    <p class="line"><span>S950rx: ported to the browser and extended by OPT</span><span class="ver" title="Build 249">v1.0</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
+    <p class="line"><span>S950rx: ported to the browser and extended by OPT</span><span class="ver" title="Build 254">v1.0</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
   </div>
 </footer>
 
@@ -3993,6 +3994,7 @@ function initSampleEditor({ app: app2, $: $3, log: log2, withBusy: withBusy2, re
 
 // src/service.js
 var SVC = { POKE: 12, CALL: 13, PEEK: 14 };
+var ROM_VERSION_TEXT = 40882;
 var PROFILES = {
   B: { rom: "V1.2B", table: 32630, keyBuf: 46439, latch: 46444, mask: 46490, lcd1: 43750, lcd2: 44014, playScroll: 40676, pageVar: 46614, pageText: 16694, pageNameField: 16744 },
   A: { rom: "V1.0A / V1.2A", table: 32266, keyBuf: 46075, latch: 46080, mask: 46114, lcd1: 43386, lcd2: 43650, playScroll: 40312, pageVar: 46238, pageText: 16356, pageNameField: 16406 }
@@ -7491,6 +7493,19 @@ var S950Session = class {
     }
     throw new Error("the sampler did not answer a PEEK: service ops need MIDI or RS232 with the right channel");
   }
+  // The ROM's name for the display: V1.0A and V1.2A share every address, but each ROM holds its version as text in the start-up
+  // message ("AKAI S950 1.2"), so read that. V1.2B is the other layout. Falls back to the profile's own name.
+  async romVersion(ch = 0) {
+    const prof = await this.detectRom(ch);
+    if (prof !== PROFILES.A) return prof.rom;
+    try {
+      const r = await this.peek(ROM_VERSION_TEXT, 24, { ch });
+      const m = /S950\s+(1\.[02])\b/.exec(String.fromCharCode(...r.data));
+      if (m) return `V${m[1]}A`;
+    } catch {
+    }
+    return prof.rom;
+  }
   // Press a list of keys (names from SV.KEYS), a pause between each.
   async pressKeys(names, { ch = 0, gap = 350, onKey } = {}) {
     const prof = await this.detectRom(ch);
@@ -9696,6 +9711,20 @@ function download(blob, name) {
 function setStatus(text, cls) {
   $2("status").textContent = text;
   $2("status").className = `pill ${cls}`;
+  if (cls === "off") showRomText("");
+}
+function showRomText(text, cls = "on") {
+  $2("romRow").hidden = !text;
+  $2("romInfo").textContent = text;
+  $2("romInfo").className = `pill ${cls}`;
+}
+async function showRom() {
+  if (app.mode === "virtual") return showRomText("demo");
+  try {
+    showRomText(await app.session.romVersion(app.basicKnown && !app.omni ? app.basic : 0));
+  } catch {
+    showRomText("not read", "off");
+  }
 }
 function applyMode() {
   app.mode = document.querySelector("input[name=target]:checked").value;
@@ -9828,6 +9857,7 @@ async function connect(preChosen) {
       setBasic(o);
     } catch {
     }
+    await showRom();
   } catch (e) {
     log("error", e.message);
     app.transport = null;
