@@ -74,7 +74,7 @@ The same editor and waveform as Edit sample, with the slicing tools on.
 - **Pin and Lock:** each row has two padlocks. **Pin** fixes the marker's position (Find hits, sensitivity, Quantise all and dragging leave it alone); a pinned marker is orange. **Lock** fixes the row's settings (Set, Randomise and Reset all leave them alone); a locked slice is tinted blue. Shift-click sets every row.
 - **Timestretch per slice:** a stretch percentage, **D-time**, **Auto D** and **Echo** (milliseconds or a note value at the loop's BPM) for each slice, with dice buttons to randomise. See Timestretch below.
 - **Scratchpad** keeps slice settings you like (+ Save) to come back to.
-- **Output:** **Send slices** sends each slice as a one-shot sample (`NOOKIE_01`, `NOOKIE_02`, …); **Send slices & map as drum kit** also puts them on consecutive keys from the **Start key**, retuned so stretched slices keep their original length. **Render to one sample** bakes the sliced and stretched break into one sample. **Export WAV**, **Export slices** (a zip) and **Export pattern (.mid)** write files; the pattern plays the slices in their original order at the loop's tempo.
+- **Output:** **Send** sends each slice as a one-shot sample (`NOOKIE_01`, `NOOKIE_02`, …); **Send & map as kit** also puts them on consecutive keys from the **Start key**, retuned so stretched slices keep their original length. **Render to one sample** bakes the sliced and stretched break into one sample. **Export WAV**, **Export slices** (a zip) and **Export MIDI** (a pattern) write files; the pattern plays the slices in their original order at the loop's tempo.
 - Loading a new file clears the slicer back to its defaults.
 
 ### Build a program
@@ -146,7 +146,7 @@ All on an S950 with V1.2A, over RS232 (a Prolific USB adapter, up to 100000 baud
 
 - **S900:** never run on one. The protocol is shared, so it should work.
 - **V1.2B** (Akai's SCSI-card release): recognised and mapped from the ROM image, but never tried on a real sampler. Custom operating systems have not been tried.
-- **Export pattern (.mid)** in a sequencer or DAW.
+- **Export MIDI** in a sequencer or DAW.
 - The record automation's "any key" start, which might remove the ENT step, and Timestretch at the extremes of its ranges.
 - Saving disk images (`.img`, `.hfe`) and reading them back are not built.
 
