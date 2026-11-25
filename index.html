@@ -1510,7 +1510,7 @@ input[type=range] { padding: 0 !important; }
   <p class="blurb">Works in Chrome and Edge. Safari and Firefox don't support Web MIDI or Web Serial, so they can't connect to a sampler.</p>
   <div class="footrow">
     <p class="orig">Original concept and code: <a href="https://github.com/dxzl/akai-s950" target="_blank" rel="noopener">dxzl</a>, <i>S950rs</i> v2.4, GPL. Unofficial tool, not affiliated with or endorsed by Akai Professional. Akai is a trade mark of inMusic Brands.</p>
-    <p class="line"><a class="kofi" href="https://ko-fi.com/optfx">Support OPT-FX on Ko-fi</a><span class="sep">·</span><span>Made by OPT</span><span class="ver" title="Build 255">v1.1</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
+    <p class="line"><a class="kofi" href="https://ko-fi.com/optfx">Support OPT-FX on Ko-fi</a><span class="sep">·</span><span>Made by OPT</span><span class="ver" title="Build 256">v1.1</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
   </div>
 </footer>
 
@@ -10413,6 +10413,54 @@ document.addEventListener("focusin", (e) => {
   if (e.target.matches?.("button, input[type=range], input[type=checkbox], input[type=radio], summary")) e.target.blur();
 });
 
+</script>
+<script>
+// "A new version is ready" bar. The installed app opens instantly from its saved copy; a few seconds later this checks
+// the site for a newer build. If there is one it saves it (so Reload shows it at once) and offers Reload or Later.
+(function () {
+  const NAME = 'S950rx', PREFIX = 's950rx-', ACCENT = '#4cc274', INK = '#0b1f12';
+  const ver = document.querySelector('.ver');
+  const current = ver ? +((ver.title || '').replace(/\D/g, '')) : 0;
+  let shown = false, last = 0;
+  async function check() {
+    if (shown || !current || !('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return;
+    last = Date.now();
+    try {
+      const r = await fetch('./?latest=' + Date.now(), { cache: 'no-store' });   // the query keeps the service worker's saved copy out of it
+      if (!r.ok) return;
+      const html = await r.text();
+      const m = html.match(/class="ver" title="Build (\d+)">([^<]*)</);
+      if (!m || +m[1] <= current) return;
+      const keys = await caches.keys();
+      await Promise.all(keys.filter(k => k.startsWith(PREFIX) && !k.endsWith('fonts')).map(async k =>
+        (await caches.open(k)).put('./index.html', new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } }))));
+      show(m[2], m[1]);
+    } catch (e) {}
+  }
+  function show(v, b) {
+    shown = true;
+    const bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:12px;' +
+      'max-width:calc(100vw - 32px);box-sizing:border-box;padding:10px 12px 10px 16px;border-radius:10px;background:#1d1f23;color:#e6e8eb;' +
+      'border:1px solid ' + ACCENT + ';box-shadow:0 8px 30px rgba(0,0,0,.45);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif';
+    const msg = document.createElement('span');
+    msg.textContent = 'A new version of ' + NAME + ' is ready (' + v + ', build ' + b + ').';
+    const btn = (label, primary) => {
+      const x = document.createElement('button'); x.type = 'button'; x.textContent = label;
+      x.style.cssText = 'font:inherit;font-weight:600;cursor:pointer;border-radius:7px;padding:6px 12px;white-space:nowrap;border:1px solid ' +
+        (primary ? ACCENT + ';background:' + ACCENT + ';color:' + INK : '#3a3d43;background:transparent;color:#c7cbd1');
+      return x;
+    };
+    const reload = btn('Reload', true), later = btn('Later', false);
+    reload.onclick = () => location.reload();
+    later.onclick = () => bar.remove();
+    bar.append(msg, reload, later);
+    document.body.append(bar);
+  }
+  addEventListener('load', () => setTimeout(check, 3000));
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && Date.now() - last > 30 * 60e3) check(); });
+})();
 </script>
 </body>
 </html>
