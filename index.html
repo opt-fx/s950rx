@@ -100,6 +100,7 @@ button.small { font-size: 12px; padding: 3px 8px; }
   font-size: 13px;
 }
 .seg label:has(input:checked) { border-color: var(--accent); }
+.seg label input[type=radio] { margin: 0; }   /* browsers add a top-only margin, which sat the dot low */
 .inline { display: inline-flex; align-items: center; gap: 6px; color: var(--quiet); }
 .inline input, .inline select { color: var(--ink); }
 .check { display: inline-flex; align-items: center; gap: 6px; }
@@ -1510,7 +1511,7 @@ input[type=range] { padding: 0 !important; }
   <p class="blurb">Works in Chrome and Edge. Safari and Firefox don't support Web MIDI or Web Serial, so they can't connect to a sampler.</p>
   <div class="footrow">
     <p class="orig">Original concept and code: <a href="https://github.com/dxzl/akai-s950" target="_blank" rel="noopener">dxzl</a>, <i>S950rs</i> v2.4, GPL. Unofficial tool, not affiliated with or endorsed by Akai Professional. Akai is a trade mark of inMusic Brands.</p>
-    <p class="line"><a class="kofi" href="https://ko-fi.com/optfx">Support OPT-FX on Ko-fi</a><span class="sep">·</span><span>Made by OPT</span><span class="ver" title="Build 256">v1.1</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
+    <p class="line"><a class="kofi" href="https://ko-fi.com/optfx">Support OPT-FX on Ko-fi</a><span class="sep">·</span><span>Made by OPT</span><span class="ver" title="Build 257">v1.1</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
   </div>
 </footer>
 
