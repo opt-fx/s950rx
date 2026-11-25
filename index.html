@@ -1518,7 +1518,7 @@ input[type=range] { padding: 0 !important; }
   <p class="blurb">Works in Chrome and Edge. Safari and Firefox don't support Web MIDI or Web Serial, so they can't connect to a sampler.</p>
   <div class="footrow">
     <p class="orig">Original concept and code: <a href="https://github.com/dxzl/akai-s950" target="_blank" rel="noopener">dxzl</a>, <i>S950rs</i> v2.4, GPL. Unofficial tool, not affiliated with or endorsed by Akai Professional. Akai is a trade mark of inMusic Brands.</p>
-    <p class="line"><a class="kofi" href="https://ko-fi.com/optfx">Support OPT-FX on Ko-fi</a><span class="sep">·</span><span>Made by OPT</span><span class="ver" title="Build 261">v1.1</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
+    <p class="line"><a class="kofi" href="https://ko-fi.com/optfx">Support OPT-FX on Ko-fi</a><span class="sep">·</span><span>Made by OPT</span><span class="ver" title="Build 262">v1.1</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
   </div>
 </footer>
 
@@ -1589,7 +1589,7 @@ try {
         const frameW = outerWidth - innerWidth, frameH = outerHeight - innerHeight;
         const w = Math.min(screen.availWidth, 1440 + frameW);
         const room = screen.availHeight - Math.max(0, screenY - (screen.availTop || 0)); // from the window's top edge to the bottom of the screen, so the bottom is never off-screen
-        const h = Math.min(room, Math.max(outerHeight, document.documentElement.scrollHeight + frameH));
+        const h = room; // as tall as the screen allows, like S612 transfer: the Edit break slice table and Build a program grow as you work
         if (Math.abs(w - outerWidth) > 10 || Math.abs(h - outerHeight) > 10) resizeTo(w, h);
       }, 100));
     }
