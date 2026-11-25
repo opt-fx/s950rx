@@ -4,6 +4,12 @@ A browser editor for the Akai S900 and S950 samplers. It sends and fetches sampl
 
 **Status: release candidate.** It is built for the **stock ROMs V1.0A and V1.2A** and has been tested on a real S950 running V1.2A. The S900 shares the same exclusive protocol, so it should work, but it has not been tried on one. **V1.2B**, Akai's release for S950s fitted with the SCSI card, has a different memory layout. The app recognises it, and I have mapped the record automation and the display reading for it from the V1.2B ROM image. Sample, program and parameter transfers do not depend on the ROM. I have not tried V1.2B on a real sampler, so treat it as untested. Custom operating systems have not been tried.
 
+**Use it now: https://opt-fx.com/s950rx/**
+
+## Install it as an app
+
+S950rx can be installed so it opens from the Dock or Start menu in its own window and works without a connection. In Chrome or Edge, click **Install app** beside the name at the top of the page, or the install icon at the right of the address bar. It opens instantly from the copy on your computer and checks for an update in the background, so a new version appears the next time you open it, with a line in the log. To send someone straight to the install offer, link to [opt-fx.com/s950rx/#install](https://opt-fx.com/s950rx/#install).
+
 ## Quick start
 
 1. Open the app's page, or download `index.html` and open it from disk, in **Chrome or Edge** (Safari and Firefox have no Web MIDI or Web Serial). Nothing else is needed.

@@ -1,0 +1,17 @@
+{
+  "id": "/s950rx/",
+  "name": "S950rx",
+  "short_name": "S950rx",
+  "description": "Editor and sample transfer for the Akai S950 and S900 over RS232 or MIDI. Unofficial community tool by OPT.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "related_applications": [{ "platform": "webapp", "url": "https://opt-fx.com/s950rx/manifest.webmanifest" }],
+  "background_color": "#1a1b1d",
+  "theme_color": "#1a1b1d",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

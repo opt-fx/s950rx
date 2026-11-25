@@ -4,7 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>S950rx</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Cdefs%3E%3Cmask id=%22sunmask%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23fff%22/%3E%3Crect y=%22224%22 width=%22400%22 height=%228%22/%3E%3Crect y=%22262%22 width=%22400%22 height=%2213%22/%3E%3Crect y=%22302%22 width=%22400%22 height=%2218%22/%3E%3Crect y=%22344%22 width=%22400%22 height=%2224%22/%3E%3C/mask%3E%3C/defs%3E%3Ccircle cx=%22200%22 cy=%22200%22 r=%22196%22 fill=%22%23FF8A1F%22 mask=%22url%28%23sunmask%29%22/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<script>/* catch Chrome's install offer as early as possible: it can arrive before the rest of the page has loaded */ try { addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.earlyInstall = e; }); } catch (e) {}</script>
+<meta name="theme-color" content="#1a1b1d">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="S950rx">
 <style>
 :root {
   --bg: #1a1b1d;
@@ -274,6 +279,15 @@ footer.credit .line {
 footer.credit .ver { opacity: .6; margin-left: 10px; }
 footer.credit svg { width: 18px; height: 18px; flex: none; transform: translateY(-1px); }
 footer.credit a { color: var(--accent); }
+footer.credit .sep { opacity: .5; }
+footer.credit a.kofi { color: #d9925a; text-decoration: none; }
+footer.credit a.kofi:hover { color: #ffa04a; text-decoration: underline; }
+#installBtn { display: none; font-size: 12px; padding: 5px 11px; }
+#installBtn.show { display: inline-block; }
+.installbar { display: none; align-items: center; gap: 12px; margin: 10px 20px 0; background: #18201a; border: 1px solid #2f4a35; border-radius: 8px; padding: 10px 14px; font-size: 13px; }
+.installbar.show { display: flex; }
+.installbar .msg { flex: 1; }
+.installbar .msg b { color: var(--accent); }
 #slList { margin-top: 12px; }
 /* ---- S950 status strip ---- */
 .tab.on::before {
@@ -1022,12 +1036,14 @@ input[type=range] { padding: 0 !important; }
 </style>
 </head>
 <body>
+<div class="installbar" id="installBar"><div class="msg"><b>S950rx works as an app on your computer.</b> <span id="installHint">Its own window and Dock icon, and it opens without a connection.</span></div><button class="primary" id="installBarBtn" type="button">Install app</button><button id="installBarNo" type="button">Not now</button></div>
 <header>
   <div class="brand">
     <div>
       <h1>S950rx</h1>
       <p class="sub">Akai S900/S950 editor</p>
     </div>
+    <button id="installBtn" type="button" title="Install S950rx as an app: its own window and Dock icon, and it works offline">Install app</button>
   </div>
   <div class="conn">
     <div class="seg" role="radiogroup" aria-label="Target">
@@ -1493,12 +1509,91 @@ input[type=range] { padding: 0 !important; }
 <footer class="credit">
   <p class="blurb">Works in Chrome and Edge. Safari and Firefox don't support Web MIDI or Web Serial, so they can't connect to a sampler.</p>
   <div class="footrow">
-    <p class="orig">Original concept and code: <a href="https://github.com/dxzl/akai-s950" target="_blank" rel="noopener">dxzl</a>, <i>S950rs</i> v2.4, GPL.</p>
-    <p class="line"><span>S950rx: ported to the browser and extended by OPT</span><span class="ver" title="Build 254">v1.0</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
+    <p class="orig">Original concept and code: <a href="https://github.com/dxzl/akai-s950" target="_blank" rel="noopener">dxzl</a>, <i>S950rs</i> v2.4, GPL. Unofficial tool, not affiliated with or endorsed by Akai Professional. Akai is a trade mark of inMusic Brands.</p>
+    <p class="line"><a class="kofi" href="https://ko-fi.com/optfx">Support OPT-FX on Ko-fi</a><span class="sep">·</span><span>Made by OPT</span><span class="ver" title="Build 255">v1.1</span><svg viewBox="0 0 400 400" role="img" aria-label="OPT logo: a striped sun"><defs><mask id="sunmask2"><rect width="400" height="400" fill="#fff"/><rect y="224" width="400" height="8"/><rect y="262" width="400" height="13"/><rect y="302" width="400" height="18"/><rect y="344" width="400" height="24"/></mask></defs><circle cx="200" cy="200" r="196" fill="#FF8A1F" mask="url(#sunmask2)"/></svg></p>
   </div>
 </footer>
 
 
+<script>
+// ---------- App: offline use, install offer, window size, update note ----------
+try {
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost') && !/claude\.ai$/.test(location.hostname))
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+} catch (e) {}
+(function () {
+  const say = (t) => { if (window.optLog) window.optLog(t); else addEventListener('load', () => window.optLog && window.optLog(t)); };
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const ua = navigator.userAgent;
+  const safari = /Safari\//.test(ua) && !/Chrome|Chromium|Edg\//.test(ua);
+  const firefox = /Firefox\//.test(ua);
+  const btn = document.getElementById('installBtn'), bar = document.getElementById('installBar');
+  const barBtn = document.getElementById('installBarBtn'), hint = document.getElementById('installHint');
+  const intro = 'Its own window and Dock icon, and it opens without a connection.';
+  const safariHint = 'In Safari, choose File > Add to Dock.';
+  const wanted = location.hash === '#install' && !standalone;
+  let deferred = null;
+  const hideAll = () => { btn.classList.remove('show'); bar.classList.remove('show'); };
+  const install = async () => {
+    if (deferred) {
+      deferred.prompt(); window.earlyInstall = null;
+      const { outcome } = await deferred.userChoice;
+      deferred = null; btn.classList.remove('show');
+      if (outcome === 'accepted') hideAll();
+    } else if (safari) { hint.textContent = safariHint; bar.classList.add('show'); barBtn.style.display = 'none'; }
+  };
+  btn.addEventListener('click', install);
+  barBtn.addEventListener('click', install);
+  document.getElementById('installBarNo').addEventListener('click', () => {
+    bar.classList.remove('show');
+    if (location.hash === '#install') history.replaceState(null, '', location.pathname + location.search);
+  });
+  const offer = (e) => {
+    deferred = e;
+    btn.classList.add('show');
+    barBtn.style.display = ''; hint.textContent = intro;
+    if (wanted) bar.classList.add('show');
+  };
+  addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); offer(e); });
+  if (window.earlyInstall) offer(window.earlyInstall);
+  addEventListener('appinstalled', () => { hideAll(); say('Installed: S950rx now opens in its own window.'); });
+  if (!standalone && safari) {
+    btn.classList.add('show');
+    if (wanted) { hint.textContent = safariHint; barBtn.style.display = 'none'; bar.classList.add('show'); }
+  }
+  if (wanted && !safari) setTimeout(async () => {
+    if (deferred) return;
+    let installed = false;
+    try { installed = !!(navigator.getInstalledRelatedApps && (await navigator.getInstalledRelatedApps()).length); } catch (e) {}
+    if (deferred) return;
+    hint.textContent = firefox
+      ? 'Firefox can’t install apps, or use Web MIDI or Web Serial. Open this page in Chrome or Edge.'
+      : installed ? 'It’s already installed on this computer: open S950rx from your Dock, Launchpad or Start menu.'
+      : 'If it’s already installed, open it from your Dock or Launchpad. Otherwise use the install icon at the right of the address bar.';
+    barBtn.style.display = 'none';
+    bar.classList.add('show');
+  }, 2500);
+  // First launch of the installed app: a comfortable width, as tall as the screen allows.
+  try {
+    if (standalone && !localStorage.getItem('s950rx_window_sized')) {
+      localStorage.setItem('s950rx_window_sized', '1');
+      addEventListener('load', () => setTimeout(() => {
+        const frameW = outerWidth - innerWidth, frameH = outerHeight - innerHeight;
+        const w = Math.min(screen.availWidth, 1440 + frameW);
+        const h = Math.min(screen.availHeight, Math.max(outerHeight, document.documentElement.scrollHeight + frameH));
+        if (Math.abs(w - outerWidth) > 10 || h > outerHeight + 10) resizeTo(w, h);
+      }, 100));
+    }
+  } catch (e) {}
+  // Update note in the log, once per new build.
+  try {
+    const ver = document.querySelector('footer .ver'), build = (ver.title.match(/\d+/) || [''])[0];
+    const seen = localStorage.getItem('s950rx_build');
+    localStorage.setItem('s950rx_build', build);
+    if (seen && seen !== build) say(`Updated to ${ver.textContent} (build ${build}).`);
+  } catch (e) {}
+})();
+</script>
 <script type="module">
 // src/transports.js
 var webSerialSupported = () => typeof navigator !== "undefined" && "serial" in navigator;
@@ -7261,6 +7356,7 @@ function log(kind, text) {
   while (box.childElementCount > 500) box.firstChild.remove();
   if (stick) box.scrollTop = box.scrollHeight;
 }
+window.optLog = (t) => log("info", t);
 $2("clearLog").onclick = () => $2("log").innerHTML = "";
 function sessionLog(dir, bytes, text) {
   if (dir === "info") log("info", text);
