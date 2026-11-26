@@ -2,7 +2,7 @@
 // Scope is this app's own folder (/s950rx/), so it never touches the other OPT apps on the same site.
 // The page opens from the saved copy straight away and the latest build is fetched in the background, so a new
 // release shows on the launch after it is published. Cache names start with "s950rx-" and only those are ever deleted.
-const VERSION = '263';            // stamped by build.mjs from package.json
+const VERSION = '264';            // stamped by build.mjs from package.json
 const CACHE = 's950rx-b' + VERSION, FONTS = 's950rx-fonts';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
               './icons/icon-maskable-512.png', './icons/apple-touch-icon.png', './icons/icon.svg'];
